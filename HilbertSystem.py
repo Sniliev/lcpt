@@ -118,7 +118,7 @@ def is_valid(inp):
                 pre == ')')):
                 return False
             if( not ( isinstance(suc, Formula) or re.search('[a-zA-Z]', suc) or
-                pre == '(')):
+                pre == '(' or suc == '!')):
                 return False
 
         if(element == '!'):
@@ -216,9 +216,12 @@ def mp(formula, formulas):
 
 def is_gen(formula, formulas):
     if len(formula) != 2: return False
-    if "FE" not in formula.list_version[0] : return False
-    for aj in formulas:
-        if formula.list_version[1] == aj : return True
+    try:
+        if "FE" not in formula.list_version[0] : return False
+        for aj in formulas:
+            if formula.list_version[1] == aj : return True
+    except(TypeError, IndexError):
+        return False
     return False
 
 #"(A->B->C)->(A->B)->A->C"
@@ -368,7 +371,7 @@ def is_seventh_axiom(formula):
         B = (impl == formula.list_version[2])
         if (A and B): return True
 
-    except (IndexError) as e:
+    except (IndexError, TypeError) as e:
         return False
 
     return False
@@ -497,7 +500,6 @@ def fixed_brackets(formula, formulas):
             return True
 
     return False
-
 
 def removed_brackets(old_formula, new_formula):
     a = list(old_formula)
